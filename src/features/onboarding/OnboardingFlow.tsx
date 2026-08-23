@@ -124,8 +124,8 @@ function OnboardingShell({
       {/* Responsive Onboarding Container */}
       <div
         className={[
-          "relative flex flex-col overflow-hidden w-full",
-          "min-h-dvh md:min-h-[640px] md:max-h-[860px] md:max-w-2xl md:rounded-[2.5rem]",
+          "relative flex flex-col w-full overflow-hidden",
+          "h-dvh md:h-[min(880px,94vh)] md:min-h-[640px] md:max-w-2xl md:rounded-[2.5rem]",
           "md:shadow-[0_24px_64px_rgba(37,32,64,0.14)] md:border md:border-[var(--color-evolv-border-soft)]",
           "bg-[var(--color-evolv-surface)]",
         ].join(" ")}
@@ -173,7 +173,7 @@ function OnboardingShell({
         </div>
 
         {/* ── Step content ── */}
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
           {renderStep(currentStep, displayName, isDemo)}
         </div>
       </div>

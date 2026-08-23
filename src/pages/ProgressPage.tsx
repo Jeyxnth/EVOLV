@@ -248,7 +248,7 @@ export function ProgressPage() {
         </h1>
       </div>
 
-      <div className="px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-24 md:pb-10 space-y-6">
+      <div className="px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-28 md:pb-12 space-y-6">
         {/* ── Gamification Progression Hero Card ── */}
         <Card variant="elevated" className="animate-fade-in-up p-5 space-y-4">
           <div className="flex items-center justify-between">

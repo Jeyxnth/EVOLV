@@ -77,8 +77,8 @@ export function LoginPage({ onBack, onTryDemo, onAuthenticated }: LoginPageProps
       {/* Responsive Card Container */}
       <div
         className={[
-          "relative flex flex-col overflow-hidden w-full",
-          "min-h-dvh md:min-h-0 md:max-w-md md:rounded-[2.5rem]",
+          "relative flex flex-col w-full overflow-hidden",
+          "h-dvh md:h-auto md:max-h-[90vh] md:min-h-[580px] md:max-w-md md:rounded-[2.5rem]",
           "md:shadow-[0_24px_64px_rgba(37,32,64,0.14)] md:border md:border-[var(--color-evolv-border-soft)]",
           "bg-[var(--color-evolv-surface)]",
         ].join(" ")}
@@ -97,7 +97,7 @@ export function LoginPage({ onBack, onTryDemo, onAuthenticated }: LoginPageProps
         </div>
 
         {/* ── Scrollable content ── */}
-        <div className="flex-1 overflow-y-auto px-6 pb-8">
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-12 scroll-smooth">
           {/* Logo + companion */}
           <div className="flex flex-col items-center mb-6 animate-fade-in-up">
             <CompanionPlaceholder size="sm" className="mb-3" />

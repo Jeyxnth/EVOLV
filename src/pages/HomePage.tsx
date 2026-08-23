@@ -440,7 +440,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="flex-1 px-[var(--space-evolv-page)] pb-6 space-y-[var(--space-evolv-section)]">
+      <div className="flex-1 px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-28 md:pb-12 space-y-6">
 
         {/* ── At a Glance Stats ── */}
         <div className="flex gap-3 animate-fade-in-up stagger-2">

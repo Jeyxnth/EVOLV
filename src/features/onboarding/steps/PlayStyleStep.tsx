@@ -97,9 +97,9 @@ export function PlayStyleStep() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 flex-1 overflow-hidden">
       {/* Header */}
-      <div className="shrink-0 px-6 pt-2 pb-4">
+      <div className="shrink-0 px-6 pt-2 pb-3">
         <p className="text-[var(--text-evolv-xs)] text-[var(--color-evolv-muted)] font-semibold uppercase tracking-widest mb-1">
           Step 3 of 3
         </p>
@@ -112,7 +112,7 @@ export function PlayStyleStep() {
       </div>
 
       {/* Options */}
-      <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-2.5">
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-1 pb-8 space-y-2.5 scroll-smooth">
         {PLAY_STYLES.map((opt) => {
           const isOn = selected === opt.value;
           const isExpanded = expanded === opt.value;
@@ -215,7 +215,7 @@ export function PlayStyleStep() {
       </div>
 
       {/* Footer CTA */}
-      <div className="shrink-0 px-6 pb-10 pt-3">
+      <div className="shrink-0 px-6 pb-6 pt-3 bg-[var(--color-evolv-surface)] border-t border-[var(--color-evolv-border-soft)] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
         <Button
           id="onboarding-playstyle-next"
           variant="primary"

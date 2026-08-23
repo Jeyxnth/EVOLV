@@ -135,7 +135,7 @@ export function ProfilePage({ displayName, isDemo, onLogout }: ProfilePageProps)
           />
         </div>
 
-        <div className="px-[var(--space-evolv-page)] pb-6 space-y-[var(--space-evolv-section)]">
+        <div className="px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-28 md:pb-12 space-y-[var(--space-evolv-section)]">
 
           {/* ── Session info badge ── */}
           {isDemo && (

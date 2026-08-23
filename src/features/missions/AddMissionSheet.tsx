@@ -289,7 +289,7 @@ export function AddMissionSheet({
 
             {/* Tab 1: Suggested Habits */}
             {activeTab === "suggested" && (
-              <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
+              <div className="space-y-2">
                 {SUGGESTED_ACTIVITIES.map((sug) => (
                   <div
                     key={sug.id}

@@ -231,7 +231,7 @@ export function JourneyPage() {
         </h1>
       </div>
 
-      <div className="flex-1 px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-24 md:pb-10 pt-4">
+      <div className="flex-1 px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-28 md:pb-12 pt-4">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8 space-y-6 lg:space-y-0">
 
           {/* ── Left Column: Next Unlock & Active Goals ── */}

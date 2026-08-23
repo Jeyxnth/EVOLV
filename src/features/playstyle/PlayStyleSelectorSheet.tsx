@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PlayStyleSelectorSheet.tsx - BottomSheet to view and switch play style.
  *
  * Used from ProfilePage (and any settings surface) to let the student switch
@@ -55,7 +55,7 @@ export function PlayStyleSelectorSheet({
           Your wellbeing goals stay exactly the same. Only the way your missions are framed and celebrated changes.
         </p>
 
-        <div className="space-y-2.5 max-h-[60vh] overflow-y-auto pr-1">
+        <div className="space-y-2.5">
           {PLAY_STYLE_LIST.map((styleKey) => {
             const cfg = PLAY_STYLE_CONFIGS[styleKey];
             const isSelected = selected === styleKey;

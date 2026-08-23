@@ -265,7 +265,7 @@ export function WorldPage() {
       </div>
 
       {/* ── Page body ── */}
-      <div className="flex-1 px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-24 md:pb-10 pt-4 space-y-6">
+      <div className="flex-1 px-[var(--space-evolv-page)] md:px-6 lg:px-8 pb-28 md:pb-12 pt-4 space-y-6">
         {/* World Header Status */}
         <div className="flex items-center justify-between animate-fade-in-up">
           <div>

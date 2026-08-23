@@ -44,7 +44,7 @@ export function JourneyRevealStep() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 flex-1 overflow-hidden">
       {/* Visual celebration area */}
       <div
         className="shrink-0 flex flex-col items-center justify-center pt-8 pb-6 px-8 text-center relative"
@@ -93,7 +93,7 @@ export function JourneyRevealStep() {
       </div>
 
       {/* Summary cards */}
-      <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3 animate-fade-in-up stagger-2">
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-1 pb-8 space-y-3 animate-fade-in-up stagger-2 scroll-smooth">
 
         {/* Goals */}
         <Card variant="default" className="space-y-2">
@@ -170,7 +170,7 @@ export function JourneyRevealStep() {
       </div>
 
       {/* Enter CTA */}
-      <div className="shrink-0 px-6 pb-10 pt-3 animate-fade-in-up stagger-4">
+      <div className="shrink-0 px-6 pb-6 pt-3 bg-[var(--color-evolv-surface)] border-t border-[var(--color-evolv-border-soft)] shadow-[0_-4px_16px_rgba(0,0,0,0.04)] animate-fade-in-up stagger-4">
         <Button
           id="onboarding-enter-evolv"
           variant="primary"

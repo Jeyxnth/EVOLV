@@ -17,10 +17,10 @@ export function WelcomeStep({ displayName, isDemo }: WelcomeStepProps) {
   const { nextStep } = useOnboarding();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0 flex-1 overflow-hidden">
       {/* Visual area */}
       <div
-        className="flex-1 flex flex-col items-center justify-center px-8 text-center"
+        className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center px-8 py-6 text-center relative scroll-smooth"
         style={{
           background:
             "linear-gradient(180deg, var(--color-evolv-primary-soft) 0%, var(--color-evolv-bg) 75%)",
@@ -91,7 +91,7 @@ export function WelcomeStep({ displayName, isDemo }: WelcomeStepProps) {
       </div>
 
       {/* CTA */}
-      <div className="shrink-0 px-6 pb-10 pt-4 animate-fade-in-up stagger-3">
+      <div className="shrink-0 px-6 pb-6 pt-3 bg-[var(--color-evolv-surface)] border-t border-[var(--color-evolv-border-soft)] shadow-[0_-4px_16px_rgba(0,0,0,0.04)] animate-fade-in-up stagger-3">
         <Button
           id="onboarding-welcome-next"
           variant="primary"

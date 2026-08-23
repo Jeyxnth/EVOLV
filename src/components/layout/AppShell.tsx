@@ -35,10 +35,10 @@ export function AppShell({ activePage, onNavigate, children }: AppShellProps) {
         {/* Scrollable page body */}
         <main
           id="main-content"
-          className="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth"
+          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth"
         >
           {/* Constrained responsive inner wrapper */}
-          <div className="w-full max-w-5xl lg:max-w-6xl mx-auto min-h-full">
+          <div className="w-full max-w-5xl lg:max-w-6xl mx-auto min-h-full flex flex-col">
             {children}
           </div>
         </main>
