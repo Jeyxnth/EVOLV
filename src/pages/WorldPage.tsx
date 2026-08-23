@@ -204,52 +204,57 @@ export function WorldPage() {
         <div className="absolute inset-0 pointer-events-auto z-15">
           {world.elements.map((el, i) => {
             const positions = [
-              { bottom: "18px", left: "6%" },
-              { bottom: "46px", left: "22%" },
-              { bottom: "70px", left: "36%" },
-              { bottom: "68px", right: "22%" },
-              { bottom: "42px", right: "8%" },
-              { bottom: "16px", right: "2%" },
+              { bottom: "18px", left: "4%"  },   // Far-left foreground
+              { bottom: "44px", left: "20%"  },  // Left mid
+              { bottom: "66px", left: "36%"  },  // Center-left
+              { bottom: "66px", left: "56%"  },  // Center-right
+              { bottom: "42px", left: "72%"  },  // Right mid
+              { bottom: "18px", left: "86%"  },  // Far-right foreground
             ];
             const pos = positions[i % positions.length];
 
             return (
-              <button
+              <div
                 key={el.id}
-                onClick={() => setSelectedElement(el)}
-                aria-label={`${el.name} - ${el.unlocked ? "Restored Landmark" : `Requires ${el.requiredEnergy} Realm Energy`}`}
-                className={[
-                  "absolute flex flex-col items-center transition-all duration-700 select-none cursor-pointer press-scale focus:outline-none",
-                  el.unlocked
-                    ? "opacity-100 scale-100 hover:scale-110"
-                    : "opacity-45 scale-90 hover:opacity-75 filter grayscale contrast-75",
-                ].join(" ")}
-                style={pos}
+                className="absolute"
+                style={{ ...pos, transform: "translateX(-50%)" }}
               >
-                <div
+                <button
+                  onClick={() => setSelectedElement(el)}
+                  aria-label={`${el.name} - ${el.unlocked ? "Restored Landmark" : `Requires ${el.requiredEnergy} Realm Energy`}`}
                   className={[
-                    "w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-xl sm:text-2xl shadow-md transition-all",
+                    "flex flex-col items-center transition-all duration-700 select-none cursor-pointer press-scale focus:outline-none",
                     el.unlocked
-                      ? "bg-white/90 border border-white/80 shadow-lg animate-fade-in-up"
-                      : "bg-black/30 border border-white/20 backdrop-blur-xs",
+                      ? "opacity-100 scale-100 hover:scale-110"
+                      : "opacity-45 scale-90 hover:opacity-75 filter grayscale contrast-75",
                   ].join(" ")}
                 >
-                  {el.icon}
-                </div>
-                <span
-                  className={[
-                    "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md mt-1 whitespace-nowrap shadow-xs",
-                    el.unlocked
-                      ? "text-white bg-black/60 backdrop-blur-xs"
-                      : "text-white/80 bg-black/40 backdrop-blur-xs",
-                  ].join(" ")}
-                >
-                  {el.unlocked ? el.name : `🔒 ${el.requiredEnergy}⚡`}
-                </span>
-              </button>
+                  <div
+                    className={[
+                      "w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-xl sm:text-2xl shadow-md transition-all",
+                      el.unlocked
+                        ? "bg-white/90 border border-white/80 shadow-lg animate-fade-in-up"
+                        : "bg-black/30 border border-white/20 backdrop-blur-xs",
+                    ].join(" ")}
+                  >
+                    {el.icon}
+                  </div>
+                  <span
+                    className={[
+                      "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md mt-1 whitespace-nowrap shadow-xs",
+                      el.unlocked
+                        ? "text-white bg-black/60 backdrop-blur-xs"
+                        : "text-white/80 bg-black/40 backdrop-blur-xs",
+                    ].join(" ")}
+                  >
+                    {el.unlocked ? el.name : `🔒 ${el.requiredEnergy}⚡`}
+                  </span>
+                </button>
+              </div>
             );
           })}
         </div>
+
 
         {/* ── Virtual Companion (Lumi) Floating in the Living World ── */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-25">

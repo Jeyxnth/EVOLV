@@ -34,15 +34,17 @@ export function WorldCanvas({
   const coreStage = getCoreStage(level, realmEnergy);
   const coreInfo = getCoreStructureInfo(playStyle, coreStage);
 
-  // Position coordinates for up to 6 landmarks around the central core
-  // (Left flank, Left-mid, Right-mid, Right flank, Far-right)
+  // Position coordinates for up to 6 landmarks around the central core.
+  // All positions use `left` percentages so that translate(-50%, -50%) correctly
+  // centers the icon on the coordinate (mixing `right` with translateX(-50%) shifts
+  // right-anchored landmarks off-screen to the right).
   const landmarkPositions = [
-    { top: "62%", left: "6%", zIndex: 12 },
-    { top: "38%", left: "18%", zIndex: 10 },
-    { top: "28%", left: "40%", zIndex: 8 },
-    { top: "30%", right: "32%", zIndex: 8 },
-    { top: "42%", right: "16%", zIndex: 10 },
-    { top: "64%", right: "6%", zIndex: 12 },
+    { top: "62%", left: "8%",  zIndex: 12 },   // Far-left foreground
+    { top: "38%", left: "20%", zIndex: 10 },   // Left mid
+    { top: "30%", left: "38%", zIndex: 8  },   // Center-left upper
+    { top: "30%", left: "62%", zIndex: 8  },   // Center-right upper
+    { top: "40%", left: "80%", zIndex: 10 },   // Right mid
+    { top: "62%", left: "92%", zIndex: 12 },   // Far-right foreground
   ];
 
   return (
@@ -101,50 +103,57 @@ export function WorldCanvas({
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        {/* Pathway trails linking Center (50, 75) to each landmark point */}
+        {/* Pathway trails linking Center (50, 72) to each landmark point */}
+        {/* Landmark 1: left 8%, top 62% → (8, 62) */}
         <path
-          d="M 50 72 Q 30 70 12 68"
+          d="M 50 72 Q 30 70 8 68"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
+        {/* Landmark 2: left 20%, top 38% → (20, 38) */}
         <path
-          d="M 50 72 Q 35 55 24 45"
+          d="M 50 72 Q 35 55 20 44"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
+        {/* Landmark 3: left 38%, top 30% → (38, 30) */}
         <path
-          d="M 50 72 Q 46 48 43 35"
+          d="M 50 72 Q 44 50 38 36"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
+        {/* Landmark 4: left 62%, top 30% → (62, 30) */}
         <path
-          d="M 50 72 Q 60 50 68 37"
+          d="M 50 72 Q 56 50 62 36"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
+        {/* Landmark 5: left 80%, top 40% → (80, 40) */}
         <path
-          d="M 50 72 Q 68 56 82 48"
+          d="M 50 72 Q 65 56 80 46"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
+        {/* Landmark 6: left 92%, top 62% → (92, 62) */}
         <path
-          d="M 50 72 Q 74 70 90 70"
+          d="M 50 72 Q 72 70 92 68"
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1.2"
           strokeDasharray="2 1.5"
           fill="none"
         />
       </svg>
+
 
       {/* ── 6. Foreground Ground Layer 1 ── */}
       <svg
@@ -176,7 +185,6 @@ export function WorldCanvas({
             style={{
               top: pos.top,
               left: pos.left,
-              right: pos.right,
               zIndex: pos.zIndex,
               transform: "translate(-50%, -50%)",
             }}
