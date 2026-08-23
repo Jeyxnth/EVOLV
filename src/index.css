@@ -1,0 +1,407 @@
+@import "tailwindcss";
+
+/*
+ * EVOLV Design System — Phase 2
+ *
+ * Tailwind v4: all tokens live here in @theme blocks.
+ * Palette philosophy: subtle pastels, soft gradients, therapeutic calm
+ * with enough game-feel to encourage daily return.
+ *
+ * Avoid: harsh neon, cyberpunk, generic wellness, childish cartoon.
+ * Inspire: exploration, growth, gentle progression.
+ */
+
+/* ─── Design Tokens ────────────────────────────────────────────────────────── */
+/* Google Fonts are loaded via <link> in index.html to avoid CSS @import ordering issues */
+@theme {
+  /* Colors — Core Palette */
+  --color-evolv-bg: #f4f2fa;
+  --color-evolv-bg-alt: #eef0f9;
+  --color-evolv-surface: #ffffff;
+  --color-evolv-surface-alt: #faf9ff;
+  --color-evolv-surface-raised: #f9f8fe;
+
+  /* Primary — Soft Lavender/Purple (Wellbeing & Reflection) */
+  --color-evolv-primary: #7c6ff0;
+  --color-evolv-primary-dark: #6155d4;
+  --color-evolv-primary-soft: #e8e5fb;
+  --color-evolv-primary-muted: #b8b0f5;
+
+  /* Mint — Soft Pastel Green (Growth & Achievement) */
+  --color-evolv-mint: #5dc9a0;
+  --color-evolv-mint-dark: #3daa82;
+  --color-evolv-mint-soft: #d1f5e9;
+  --color-evolv-mint-muted: #9de0c9;
+
+  /* Amber — Warm Pastel Yellow/Orange (XP, Rewards, Achievements) */
+  --color-evolv-amber: #f5b732;
+  --color-evolv-amber-dark: #e09e18;
+  --color-evolv-amber-soft: #fef3d0;
+  --color-evolv-amber-muted: #fad97a;
+
+  /* Sky — Soft Blue (Activity & Progress) */
+  --color-evolv-sky: #5ab4e8;
+  --color-evolv-sky-dark: #3a96cc;
+  --color-evolv-sky-soft: #d6f0fc;
+  --color-evolv-sky-muted: #9bd3f0;
+
+  /* Peach — Soft Peach/Coral (Alerts, Energy) */
+  --color-evolv-peach: #f5a07a;
+  --color-evolv-peach-soft: #fde8dc;
+  --color-evolv-peach-muted: #f9c4a8;
+
+  /* Rose — Soft Rose (Safety, Care) */
+  --color-evolv-rose: #f07a9a;
+  --color-evolv-rose-soft: #fde0e9;
+
+  /* Neutrals */
+  --color-evolv-ink: #252040;
+  --color-evolv-ink-alt: #3a3558;
+  --color-evolv-muted: #7d7897;
+  --color-evolv-muted-light: #a9a5be;
+  --color-evolv-border: #e4e1f0;
+  --color-evolv-border-soft: #ede9f8;
+
+  /* ─── Typography ─────────────────────────────────────────────────── */
+  --font-evolv-display: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-evolv-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Font sizes */
+  --text-evolv-xs: 0.6875rem;    /* 11px — metadata, tiny labels */
+  --text-evolv-sm: 0.8125rem;    /* 13px — captions, secondary */
+  --text-evolv-base: 0.9375rem;  /* 15px — comfortable body */
+  --text-evolv-md: 1rem;         /* 16px — standard */
+  --text-evolv-lg: 1.125rem;     /* 18px — section headings */
+  --text-evolv-xl: 1.375rem;     /* 22px — card headings */
+  --text-evolv-2xl: 1.75rem;     /* 28px — page headings */
+  --text-evolv-3xl: 2.25rem;     /* 36px — hero numbers (XP/level) */
+  --text-evolv-4xl: 3rem;        /* 48px — large display numbers */
+
+  /* ─── Spacing / Layout ───────────────────────────────────────────── */
+  --space-evolv-page: 1.25rem;   /* 20px — horizontal page padding */
+  --space-evolv-section: 1.5rem; /* 24px — between page sections */
+  --space-evolv-card: 1rem;      /* 16px — card inner padding */
+
+  /* ─── Border Radii ───────────────────────────────────────────────── */
+  --radius-evolv-sm: 0.5rem;     /* 8px  */
+  --radius-evolv-md: 0.75rem;    /* 12px */
+  --radius-evolv-card: 1.25rem;  /* 20px — main card radius */
+  --radius-evolv-xl: 1.75rem;    /* 28px — large panels */
+  --radius-evolv-pill: 999px;
+
+  /* ─── Shadows ────────────────────────────────────────────────────── */
+  --shadow-evolv-sm: 0 1px 4px rgba(37, 32, 64, 0.06),
+    0 0 1px rgba(37, 32, 64, 0.04);
+  --shadow-evolv-md: 0 4px 16px rgba(37, 32, 64, 0.08),
+    0 1px 4px rgba(37, 32, 64, 0.06);
+  --shadow-evolv-lg: 0 8px 32px rgba(37, 32, 64, 0.10),
+    0 2px 8px rgba(37, 32, 64, 0.06);
+  --shadow-evolv-glow: 0 4px 20px rgba(124, 111, 240, 0.30);
+  --shadow-evolv-mint-glow: 0 4px 20px rgba(93, 201, 160, 0.30);
+  --shadow-evolv-amber-glow: 0 4px 20px rgba(245, 183, 50, 0.35);
+
+  /* ─── Animation Durations ────────────────────────────────────────── */
+  --duration-evolv-fast: 150ms;
+  --duration-evolv-base: 250ms;
+  --duration-evolv-slow: 400ms;
+  --duration-evolv-xslow: 600ms;
+}
+
+/* ─── Base Styles ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-evolv-bg);
+  color: var(--color-evolv-ink);
+  font-family: var(--font-evolv-body);
+  font-size: var(--text-evolv-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-evolv-border);
+  border-radius: var(--radius-evolv-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-evolv-muted-light);
+}
+
+/* ─── Typography Utilities ─────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-evolv-display);
+}
+
+.text-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-evolv-primary) 0%,
+    var(--color-evolv-sky) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-mint {
+  background: linear-gradient(
+    135deg,
+    var(--color-evolv-mint) 0%,
+    var(--color-evolv-sky) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Background Gradients ─────────────────────────────────────────────────── */
+.bg-evolv-gradient {
+  background: linear-gradient(
+    160deg,
+    var(--color-evolv-bg) 0%,
+    var(--color-evolv-bg-alt) 100%
+  );
+}
+
+.bg-evolv-header {
+  background: linear-gradient(
+    180deg,
+    var(--color-evolv-surface) 0%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+}
+
+/* ─── Keyframe Animations ──────────────────────────────────────────────────── */
+
+/* Companion idle float */
+@keyframes companion-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  33% {
+    transform: translateY(-6px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-3px) rotate(-1deg);
+  }
+}
+
+/* Companion glow pulse */
+@keyframes companion-glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+/* XP bar fill */
+@keyframes xp-fill {
+  from {
+    width: 0%;
+  }
+}
+
+/* Fade in up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide up (bottom sheet) */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Slide down (drawer close) */
+@keyframes slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Slide in from left (drawer) */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Pulse glow for XP/level gain */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 111, 240, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 111, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 111, 240, 0);
+  }
+}
+
+/* Bounce in for badges */
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Shimmer for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Nav tab pop */
+@keyframes nav-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.88) translateY(2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ─── Animation Utility Classes ────────────────────────────────────────────── */
+.animate-companion-float {
+  animation: companion-float 3.5s ease-in-out infinite;
+}
+
+.animate-companion-glow {
+  animation: companion-glow 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up var(--duration-evolv-slow) ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in var(--duration-evolv-base) ease-out both;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-evolv-slow) cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right var(--duration-evolv-slow) cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.animate-bounce-in {
+  animation: bounce-in var(--duration-evolv-slow) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 1.5s ease-out;
+}
+
+.animate-nav-pop {
+  animation: nav-pop var(--duration-evolv-base) ease-out both;
+}
+
+/* Shimmer skeleton */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-evolv-border) 0px,
+    var(--color-evolv-surface-raised) 40px,
+    var(--color-evolv-border) 80px
+  );
+  background-size: 200px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-evolv-sm);
+}
+
+/* ─── Stagger delays for list animations ───────────────────────────────────── */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+
+/* ─── Interaction utilities ────────────────────────────────────────────────── */
+.press-scale {
+  transition: transform var(--duration-evolv-fast) ease,
+              opacity var(--duration-evolv-fast) ease;
+}
+.press-scale:active {
+  transform: scale(0.96);
+  opacity: 0.88;
+}
+
+/* ─── Safe area support (iOS notch / Android nav) ──────────────────────────── */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
