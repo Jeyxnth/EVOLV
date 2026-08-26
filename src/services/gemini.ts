@@ -2,17 +2,14 @@
  * gemini.ts — Gemini AI service for EVOLV.
  *
  * Provides:
- *  1. Multi-turn natural conversation via @google/genai.
- *  2. Structured PlayerAIContext extraction.
+ *  1. Multi-turn natural conversation via direct REST API for Gemini 3.6 Flash.
+ *  2. Structured PlayerAIContext extraction (JSON mode).
  *  3. Fallback conversation when API is unavailable.
  *
  * Uses:
- *  - SDK: @google/genai
- *  - Model: gemini-2.5-flash
- *  - thinkingConfig: { thinkingBudget: 0 } (ensures full non-truncated output)
- *  - maxOutputTokens: 1000
+ *  - Endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+ *  - REST API format conforming to Gemini GenerateContent specifications.
  */
-import { GoogleGenAI } from "@google/genai";
 import type { PlayerAIContext } from "../types";
 
 /* ── Configuration ────────────────────────────────────────────────── */
@@ -20,7 +17,7 @@ import type { PlayerAIContext } from "../types";
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 export const hasGeminiConfig = Boolean(GEMINI_API_KEY);
 
-const MODEL_ID = "gemini-2.5-flash";
+const MODEL_ID = import.meta.env.VITE_GEMINI_MODEL || "gemini-3.6-flash";
 
 if (!hasGeminiConfig) {
   console.warn(
@@ -72,15 +69,131 @@ When you have had several meaningful exchanges (around 5-7 turns) and have a goo
 
 Do NOT mention or explain this completion token to the student.`;
 
-/* ── Gemini instance ──────────────────────────────────────────────── */
+/* ── REST API Types & Client ──────────────────────────────────────── */
 
-let aiInstance: GoogleGenAI | null = null;
+export interface GenerateContentRequestBody {
+  contents: Array<{
+    role?: "user" | "model";
+    parts: Array<{ text: string }>;
+  }>;
+  systemInstruction?: {
+    parts: Array<{ text: string }>;
+  };
+  generationConfig?: {
+    responseMimeType?: string;
+  };
+}
 
-function getAI(): GoogleGenAI {
-  if (!aiInstance) {
-    aiInstance = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+/**
+ * Validates request payload against Gemini API constraints before sending.
+ */
+function validateGeminiRequest(
+  apiKey: string | undefined,
+  modelName: string,
+  contents: Array<{ role?: "user" | "model"; parts: Array<{ text: string }> }>,
+) {
+  if (!apiKey || typeof apiKey !== "string" || !apiKey.trim()) {
+    throw new Error("Gemini API key is missing or invalid.");
   }
-  return aiInstance;
+
+  if (modelName !== "gemini-3.6-flash") {
+    console.warn(`[gemini] Note: configured modelName is '${modelName}'. Expected 'gemini-3.6-flash'.`);
+  }
+
+  if (!Array.isArray(contents) || contents.length === 0) {
+    throw new Error("Gemini request contents array cannot be empty.");
+  }
+
+  for (let i = 0; i < contents.length; i++) {
+    const turn = contents[i];
+    if (!turn || !Array.isArray(turn.parts) || turn.parts.length === 0) {
+      throw new Error(`Gemini turn at index ${i} has empty or missing parts.`);
+    }
+
+    for (let j = 0; j < turn.parts.length; j++) {
+      const part = turn.parts[j];
+      if (!part || typeof part.text !== "string" || !part.text.trim()) {
+        throw new Error(`Gemini part at index [${i}][${j}] has invalid/empty text.`);
+      }
+    }
+
+    if (turn.role && turn.role !== "user" && turn.role !== "model") {
+      throw new Error(`Invalid role '${turn.role}' at index ${i}. Allowed: 'user' | 'model'.`);
+    }
+  }
+
+  const lastTurn = contents[contents.length - 1];
+  if (lastTurn.role === "model") {
+    throw new Error("Invalid request: final turn cannot be a prefilled model/assistant response.");
+  }
+}
+
+const GEMINI_TIMEOUT_MS = 45000;
+
+/**
+ * Dispatches a REST generateContent request to Gemini 3.6 Flash.
+ */
+export async function callGeminiGenerateContent(
+  requestBody: GenerateContentRequestBody,
+  modelName: string = MODEL_ID,
+): Promise<string> {
+  validateGeminiRequest(GEMINI_API_KEY, modelName, requestBody.contents);
+
+  console.log("Gemini model:", modelName);
+  console.log("Gemini request body:", JSON.stringify(requestBody, null, 2));
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+    modelName,
+  )}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY!)}`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, GEMINI_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      let errorDetails = "";
+      try {
+        const errorJson = await res.json();
+        errorDetails = JSON.stringify(errorJson);
+      } catch {
+        errorDetails = await res.text();
+      }
+      throw new Error(
+        `Gemini API request failed with status ${res.status} (${res.statusText}): ${errorDetails}`,
+      );
+    }
+
+    const data = await res.json();
+    const candidate = data.candidates?.[0];
+    const textPart = candidate?.content?.parts?.[0]?.text;
+
+    if (typeof textPart !== "string" || !textPart.trim()) {
+      throw new Error("No valid text response returned by Gemini API.");
+    }
+
+    return textPart;
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === "AbortError") {
+      const timeoutErr = new Error(`Gemini request timed out after ${GEMINI_TIMEOUT_MS / 1000}s`);
+      console.error("[gemini] Request timeout:", timeoutErr.message);
+      throw timeoutErr;
+    }
+    console.error("[gemini] Request failed:", err instanceof Error ? err.message : String(err));
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 /* ── Conversation Manager ─────────────────────────────────────────── */
@@ -89,25 +202,25 @@ function getAI(): GoogleGenAI {
  * Gets the opening message from EVOLV to start the conversation.
  */
 export async function getOpeningMessage(): Promise<string> {
-  const ai = getAI();
-
   console.log("[gemini] Requesting opening conversation message...");
 
-  const response = await ai.models.generateContent({
-    model: MODEL_ID,
-    contents:
-      "Start the wellbeing conversation as EVOLV. Greet the student warmly in 2-3 sentences and ask an open question about what has been feeling challenging or on their mind lately.",
-    config: {
-      systemInstruction: SYSTEM_PROMPT,
-      temperature: 0.8,
-      maxOutputTokens: 1000,
-      thinkingConfig: {
-        thinkingBudget: 0,
-      },
+  const requestBody: GenerateContentRequestBody = {
+    systemInstruction: {
+      parts: [{ text: SYSTEM_PROMPT }],
     },
-  });
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: "Start the wellbeing conversation as EVOLV. Greet the student warmly in 2-3 sentences and ask an open question about what has been feeling challenging or on their mind lately.",
+          },
+        ],
+      },
+    ],
+  };
 
-  const rawText = response.text ?? "";
+  const rawText = await callGeminiGenerateContent(requestBody);
   const cleaned = rawText.replace("[EVOLV_CONVERSATION_COMPLETE]", "").trim();
 
   if (!cleaned) {
@@ -127,38 +240,38 @@ export async function sendConversationMessage(
   history: ChatMessage[],
   userMessage: string,
 ): Promise<{ reply: string; isComplete: boolean }> {
-  const ai = getAI();
+  if (!userMessage || typeof userMessage !== "string" || !userMessage.trim()) {
+    throw new Error("User message cannot be empty.");
+  }
 
   console.log("[gemini] Sending message with history length:", history.length);
 
-  // Build history format required by @google/genai
-  const geminiHistory = history.map((msg) => ({
-    role: msg.role === "user" ? ("user" as const) : ("model" as const),
-    parts: [{ text: msg.text }],
-  }));
+  const contents: Array<{ role: "user" | "model"; parts: Array<{ text: string }> }> = [];
 
-  const chat = ai.chats.create({
-    model: MODEL_ID,
-    config: {
-      systemInstruction: SYSTEM_PROMPT,
-      temperature: 0.75,
-      maxOutputTokens: 1000,
-      thinkingConfig: {
-        thinkingBudget: 0,
-      },
-    },
-    history: geminiHistory,
-  });
-
-  const response = await chat.sendMessage({ message: userMessage });
-  const rawText = response.text ?? "";
-
-  if (!rawText.trim()) {
-    throw new Error("Empty response received from Gemini chat");
+  for (const msg of history) {
+    if (!msg || !msg.text || !msg.text.trim()) continue;
+    contents.push({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.text.trim() }],
+    });
   }
 
+  contents.push({
+    role: "user",
+    parts: [{ text: userMessage.trim() }],
+  });
+
+  const requestBody: GenerateContentRequestBody = {
+    systemInstruction: {
+      parts: [{ text: SYSTEM_PROMPT }],
+    },
+    contents,
+  };
+
+  const rawText = await callGeminiGenerateContent(requestBody);
+
   // Count user turns in conversation (including this one)
-  const userTurns = history.filter((m) => m.role === "user").length + 1;
+  const userTurns = contents.filter((m) => m.role === "user").length;
 
   // Completion criteria: signal present after at least 4 turns, or automatically after 7 turns
   const hasSignal = rawText.includes("[EVOLV_CONVERSATION_COMPLETE]");
@@ -211,21 +324,20 @@ Extract and return a JSON object matching this schema:
 
   try {
     console.log("[gemini] Extracting structured PlayerAIContext...");
-    const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: MODEL_ID,
-      contents: extractionPrompt,
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.1,
-        maxOutputTokens: 1000,
-        thinkingConfig: {
-          thinkingBudget: 0,
-        },
-      },
-    });
 
-    const raw = response.text ?? "";
+    const requestBody: GenerateContentRequestBody = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: extractionPrompt }],
+        },
+      ],
+      generationConfig: {
+        responseMimeType: "application/json",
+      },
+    };
+
+    const raw = await callGeminiGenerateContent(requestBody);
     const jsonText = raw.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const parsed = JSON.parse(jsonText);
     const validated = validateAndNormalizeContext(parsed, "gemini");

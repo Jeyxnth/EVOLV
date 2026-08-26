@@ -243,6 +243,31 @@ export interface AdaptationEvent {
 
 /* ── Phase 10: Virtual Companion & World Progression ──────────────── */
 
+/** SVG path `d` strings for each of the 3 terrain layers in the world canvas. */
+export interface TerrainPaths {
+  /** Far background layer (mountains / distant silhouette) */
+  far: string;
+  /** Mid-ground layer (rolling hills / terrain) */
+  mid: string;
+  /** Foreground layer (ground / base) */
+  foreground: string;
+}
+
+/** A floating ambient decorative element rendered in the world canvas. */
+export interface AmbientElement {
+  emoji: string;
+  /** CSS left % */
+  left: string;
+  /** CSS bottom % */
+  bottom: string;
+  /** Tailwind animation class e.g. animate-bounce, animate-pulse */
+  animation: string;
+  /** Opacity 0-1 */
+  opacity: number;
+  /** Font size in rem */
+  size: number;
+}
+
 export type CompanionStage = "seedling" | "budding" | "flourishing";
 export type CompanionState = "idle" | "happy" | "excited" | "encouraging" | "resting";
 
@@ -286,7 +311,13 @@ export interface PlayStyleWorldConfig {
   tagline: string;
   skyGradient: string;
   sunGlow: string;
+  /** Position of the celestial light orb in the canvas */
+  sunPosition: { top: string; right: string };
   hillColors: [string, string, string];
+  /** Per-play-style terrain SVG path shapes (distinct per style, not just recolored) */
+  terrainPaths: TerrainPaths;
+  /** Floating themed ambient decorative elements */
+  ambientElements: AmbientElement[];
   centralStructure: {
     baseName: string;
     stages: CentralStructureStage[];

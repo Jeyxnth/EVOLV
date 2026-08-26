@@ -103,7 +103,19 @@ export function WorldPage() {
           }}
         />
 
-        {/* Distant Mountain Range — Layer 3 with play-style palette */}
+        {/* Celestial Light Orb — position & glow per play style */}
+        <div
+          className="absolute w-20 h-20 sm:w-28 sm:h-28 rounded-full opacity-75 pointer-events-none transition-all duration-1000"
+          style={{
+            top: worldConfig.sunPosition.top,
+            right: worldConfig.sunPosition.right,
+            background: worldConfig.sunGlow,
+            boxShadow: "0 0 60px 20px rgba(255,255,255,0.25)",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Distant Mountain Range — Layer 3 with play-style terrain shape */}
         <svg
           className="absolute bottom-0 w-full transition-all duration-1000"
           viewBox="0 0 480 140"
@@ -111,13 +123,13 @@ export function WorldPage() {
           aria-hidden="true"
         >
           <path
-            d="M0 75 L60 45 L130 68 L200 35 L280 62 L360 38 L430 65 L480 50 L480 140 L0 140 Z"
+            d={worldConfig.terrainPaths.far}
             fill={worldConfig.hillColors[0]}
             opacity="0.45"
           />
         </svg>
 
-        {/* Mid Rolling Hills & Trails — Layer 2 */}
+        {/* Mid Rolling Hills & Trails — Layer 2 with play-style terrain shape */}
         <svg
           className="absolute bottom-0 w-full transition-all duration-1000"
           viewBox="0 0 480 120"
@@ -125,13 +137,13 @@ export function WorldPage() {
           aria-hidden="true"
         >
           <path
-            d="M0 60 C90 35, 170 65, 240 45 C320 25, 410 55, 480 40 L480 120 L0 120 Z"
+            d={worldConfig.terrainPaths.mid}
             fill={worldConfig.hillColors[1]}
             opacity="0.65"
           />
         </svg>
 
-        {/* Foreground Ground & Terrace — Layer 1 */}
+        {/* Foreground Ground & Terrace — Layer 1 with play-style terrain shape */}
         <svg
           className="absolute bottom-0 w-full transition-all duration-1000"
           viewBox="0 0 480 90"
@@ -139,27 +151,30 @@ export function WorldPage() {
           aria-hidden="true"
         >
           <path
-            d="M0 38 C80 22, 180 42, 270 30 C350 20, 420 38, 480 32 L480 90 L0 90 Z"
+            d={worldConfig.terrainPaths.foreground}
             fill={worldConfig.hillColors[2]}
             opacity="0.88"
           />
         </svg>
 
-        {/* Natural Terrain Trails linking to Home Base */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
-          viewBox="0 0 480 300"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M50 240 Q150 220 240 190 Q330 220 430 240"
-            stroke="#ffffff"
-            strokeWidth="2.5"
-            strokeDasharray="4 4"
-            fill="none"
-          />
-        </svg>
+        {/* Ambient Decorative Elements — themed floating icons per play style */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          {worldConfig.ambientElements.map((el, i) => (
+            <span
+              key={i}
+              className={`absolute select-none ${el.animation}`}
+              style={{
+                left: el.left,
+                bottom: el.bottom,
+                opacity: el.opacity,
+                fontSize: `${el.size}rem`,
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))",
+              }}
+            >
+              {el.emoji}
+            </span>
+          ))}
+        </div>
 
         {/* ── Central Evolving World Core / Home Base ── */}
         <div

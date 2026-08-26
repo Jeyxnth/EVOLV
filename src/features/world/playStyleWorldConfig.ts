@@ -3,11 +3,36 @@
  *
  * Implements:
  *  - Distinct visual themes, sky gradients, and hill colors per play style
+ *  - Per-play-style terrain SVG path profiles (distinct shapes, not just colors)
+ *  - Ambient floating decorative elements per play style
  *  - Evolving Central World Structures (Early -> Mid -> Advanced stages)
  *  - Tailored unlockable world elements with required Realm Energy and Level
  *  - Progression narratives and milestones matching each player's play style
  */
 import type { PlayStyle, PlayStyleWorldConfig, WorldElement, CentralStructureStage } from "../../types";
+
+export interface TerrainPaths {
+  /** Far background layer (mountains / distant silhouette) */
+  far: string;
+  /** Mid-ground layer (rolling hills / terrain) */
+  mid: string;
+  /** Foreground layer (ground / base) */
+  foreground: string;
+}
+
+export interface AmbientElement {
+  emoji: string;
+  /** CSS left % */
+  left: string;
+  /** CSS bottom % */
+  bottom: string;
+  /** Tailwind animation class e.g. animate-bounce, animate-pulse, animate-spin */
+  animation: string;
+  /** Opacity 0-1 */
+  opacity: number;
+  /** Font size in rem */
+  size: number;
+}
 
 interface BasePlayStyleConfig {
   playStyle: PlayStyle;
@@ -16,7 +41,13 @@ interface BasePlayStyleConfig {
   tagline: string;
   skyGradient: string;
   sunGlow: string;
+  /** Position of celestial orb from the right (CSS %) */
+  sunPosition: { top: string; right: string };
   hillColors: [string, string, string];
+  /** Distinct SVG terrain path shapes per play style */
+  terrainPaths: TerrainPaths;
+  /** Floating ambient decorative elements */
+  ambientElements: AmbientElement[];
   centralStructure: {
     baseName: string;
     stages: CentralStructureStage[];
@@ -35,7 +66,20 @@ export const PLAY_STYLE_WORLDS: Record<PlayStyle, BasePlayStyleConfig> = {
     tagline: "Your real-world movement breathes life into an expanding wilderness.",
     skyGradient: "linear-gradient(180deg, #bbf2f6 0%, #d8f3dc 40%, #e8f5e9 75%, var(--color-evolv-bg) 100%)",
     sunGlow: "radial-gradient(circle at 40% 40%, #fff7b3, #f5c842)",
+    sunPosition: { top: "8%", right: "8%" },
     hillColors: ["#81c784", "#66bb6a", "#48bb78"],
+    // Gentle rolling organic hills — nature valley feeling
+    terrainPaths: {
+      far: "M0 75 L60 45 L130 68 L200 35 L280 62 L360 38 L430 65 L480 50 L480 140 L0 140 Z",
+      mid: "M0 60 C90 35, 170 65, 240 45 C320 25, 410 55, 480 40 L480 120 L0 120 Z",
+      foreground: "M0 38 C80 22, 180 42, 270 30 C350 20, 420 38, 480 32 L480 90 L0 90 Z",
+    },
+    ambientElements: [
+      { emoji: "🌿", left: "12%", bottom: "32%", animation: "animate-pulse", opacity: 0.7, size: 0.9 },
+      { emoji: "🦋", left: "35%", bottom: "55%", animation: "animate-bounce", opacity: 0.65, size: 0.8 },
+      { emoji: "🌸", left: "68%", bottom: "40%", animation: "animate-pulse", opacity: 0.6, size: 0.85 },
+      { emoji: "🍃", left: "82%", bottom: "60%", animation: "animate-bounce", opacity: 0.55, size: 0.75 },
+    ],
     centralStructure: {
       baseName: "Arboreal Explorer Basecamp",
       stages: [
@@ -149,9 +193,23 @@ export const PLAY_STYLE_WORLDS: Record<PlayStyle, BasePlayStyleConfig> = {
     regionName: "The Sunken Citadel",
     worldTheme: "Ancient Mystical Relic Ruins",
     tagline: "Every daily habit decodes enigmatic ruins and restores ancient mechanisms.",
-    skyGradient: "linear-gradient(180deg, #dcd6f7 0%, #c4bbf0 35%, #e3e0f3 70%, var(--color-evolv-bg) 100%)",
+    skyGradient: "linear-gradient(180deg, #2d1b69 0%, #6b3fa0 30%, #9d72c8 60%, #dcd6f7 85%, var(--color-evolv-bg) 100%)",
     sunGlow: "radial-gradient(circle at 40% 40%, #e0c3fc, #8e44ad)",
-    hillColors: ["#a29bfe", "#7c6cf0", "#6c5ce7"],
+    sunPosition: { top: "10%", right: "12%" },
+    hillColors: ["#4a2080", "#7c6cf0", "#6c5ce7"],
+    // Angular, stepped silhouettes — broken ruins, jutting spires
+    terrainPaths: {
+      far: "M0 100 L40 70 L80 90 L110 50 L145 75 L180 45 L220 80 L255 40 L295 65 L340 35 L380 60 L415 30 L450 55 L480 45 L480 140 L0 140 Z",
+      mid: "M0 80 L30 55 L70 72 L100 42 L140 62 L175 35 L215 58 L255 32 L290 55 L330 28 L370 50 L410 38 L450 52 L480 42 L480 120 L0 120 Z",
+      foreground: "M0 55 L25 38 L60 50 L90 28 L130 45 L165 22 L200 40 L240 20 L275 38 L310 18 L345 35 L385 16 L420 32 L460 24 L480 30 L480 90 L0 90 Z",
+    },
+    ambientElements: [
+      { emoji: "💎", left: "18%", bottom: "48%", animation: "animate-pulse", opacity: 0.8, size: 0.85 },
+      { emoji: "✨", left: "42%", bottom: "62%", animation: "animate-bounce", opacity: 0.7, size: 0.75 },
+      { emoji: "🔮", left: "72%", bottom: "45%", animation: "animate-pulse", opacity: 0.75, size: 0.9 },
+      { emoji: "⭐", left: "88%", bottom: "58%", animation: "animate-bounce", opacity: 0.6, size: 0.7 },
+      { emoji: "🌙", left: "6%", bottom: "65%", animation: "animate-pulse", opacity: 0.55, size: 0.8 },
+    ],
     centralStructure: {
       baseName: "Citadel Runic Core",
       stages: [
@@ -265,9 +323,23 @@ export const PLAY_STYLE_WORLDS: Record<PlayStyle, BasePlayStyleConfig> = {
     regionName: "The Citadel of Mind",
     worldTheme: "Grand Academy of Science & Discovery",
     tagline: "Your daily focus builds a towering monument of knowledge and scholarship.",
-    skyGradient: "linear-gradient(180deg, #c7ecee 0%, #7ed6df 35%, #dff9fb 75%, var(--color-evolv-bg) 100%)",
+    skyGradient: "linear-gradient(180deg, #0f4c75 0%, #1b6ca8 30%, #2980b9 55%, #c7ecee 80%, var(--color-evolv-bg) 100%)",
     sunGlow: "radial-gradient(circle at 40% 40%, #e0f7fa, #00cec9)",
-    hillColors: ["#48dbfb", "#0abde3", "#0086a8"],
+    sunPosition: { top: "6%", right: "16%" },
+    hillColors: ["#1a5276", "#0abde3", "#0086a8"],
+    // Tiered cliff ledges and academic columnar silhouettes
+    terrainPaths: {
+      far: "M0 90 L50 65 L80 75 L120 45 L160 60 L200 40 L240 55 L280 30 L320 48 L360 25 L400 42 L440 20 L480 35 L480 140 L0 140 Z",
+      mid: "M0 70 L40 50 L80 60 L110 35 L150 52 L185 30 L225 48 L265 22 L305 42 L345 18 L385 36 L425 14 L465 30 L480 26 L480 120 L0 120 Z",
+      foreground: "M0 48 L30 30 L65 42 L100 18 L140 36 L175 14 L215 32 L255 12 L295 28 L335 10 L375 26 L415 8 L455 22 L480 18 L480 90 L0 90 Z",
+    },
+    ambientElements: [
+      { emoji: "⭐", left: "15%", bottom: "62%", animation: "animate-pulse", opacity: 0.7, size: 0.8 },
+      { emoji: "🔭", left: "38%", bottom: "52%", animation: "animate-bounce", opacity: 0.6, size: 0.75 },
+      { emoji: "📡", left: "65%", bottom: "60%", animation: "animate-pulse", opacity: 0.65, size: 0.8 },
+      { emoji: "🌟", left: "85%", bottom: "55%", animation: "animate-bounce", opacity: 0.6, size: 0.7 },
+      { emoji: "🪐", left: "5%", bottom: "72%", animation: "animate-pulse", opacity: 0.5, size: 0.85 },
+    ],
     centralStructure: {
       baseName: "Grand Academy Center",
       stages: [
@@ -381,9 +453,24 @@ export const PLAY_STYLE_WORLDS: Record<PlayStyle, BasePlayStyleConfig> = {
     regionName: "Haven Hollow",
     worldTheme: "Cozy Hearthside Settlement & Gardens",
     tagline: "Gentle daily consistency nurtures a warm, welcoming community village.",
-    skyGradient: "linear-gradient(180deg, #ffeaa7 0%, #fab1a0 40%, #fdcb6e 70%, var(--color-evolv-bg) 100%)",
+    skyGradient: "linear-gradient(180deg, #ffeaa7 0%, #fab1a0 35%, #fdcb6e 65%, #fff4e6 85%, var(--color-evolv-bg) 100%)",
     sunGlow: "radial-gradient(circle at 40% 40%, #fff2cc, #f39c12)",
-    hillColors: ["#fbc531", "#e1b12c", "#c2911b"],
+    sunPosition: { top: "8%", right: "10%" },
+    hillColors: ["#e8a838", "#e1b12c", "#d4940f"],
+    // Soft, bumpy meadow-like terrain — warm and welcoming
+    terrainPaths: {
+      far: "M0 80 C60 55, 120 75, 180 58 C240 42, 300 68, 360 52 C400 42, 440 60, 480 50 L480 140 L0 140 Z",
+      mid: "M0 65 C50 45, 100 62, 160 48 C220 34, 280 56, 340 42 C390 32, 435 50, 480 40 L480 120 L0 120 Z",
+      foreground: "M0 44 C40 30, 85 44, 130 32 C175 20, 220 38, 270 26 C315 16, 360 32, 410 22 C440 16, 460 26, 480 22 L480 90 L0 90 Z",
+    },
+    ambientElements: [
+      { emoji: "🌸", left: "10%", bottom: "38%", animation: "animate-bounce", opacity: 0.75, size: 0.9 },
+      { emoji: "🌼", left: "30%", bottom: "30%", animation: "animate-pulse", opacity: 0.65, size: 0.8 },
+      { emoji: "🦋", left: "55%", bottom: "48%", animation: "animate-bounce", opacity: 0.7, size: 0.85 },
+      { emoji: "🌺", left: "78%", bottom: "36%", animation: "animate-pulse", opacity: 0.65, size: 0.8 },
+      { emoji: "☁️", left: "20%", bottom: "72%", animation: "animate-bounce", opacity: 0.45, size: 1.1 },
+      { emoji: "☁️", left: "65%", bottom: "78%", animation: "animate-pulse", opacity: 0.35, size: 0.9 },
+    ],
     centralStructure: {
       baseName: "Hearthside Village Hub",
       stages: [
@@ -497,9 +584,23 @@ export const PLAY_STYLE_WORLDS: Record<PlayStyle, BasePlayStyleConfig> = {
     regionName: "Apex Citadel",
     worldTheme: "Valor Peak & Fortress of Discipline",
     tagline: "Every hard-won daily triumph reinforces an impregnable stronghold.",
-    skyGradient: "linear-gradient(180deg, #ff7675 0%, #d63031 35%, #2d3436 80%, var(--color-evolv-bg) 100%)",
+    skyGradient: "linear-gradient(180deg, #1a0a00 0%, #7f1d1d 25%, #c0392b 50%, #e74c3c 70%, #4a0000 90%, var(--color-evolv-bg) 100%)",
     sunGlow: "radial-gradient(circle at 40% 40%, #ffbe76, #e74c3c)",
-    hillColors: ["#eb4d4b", "#c0392b", "#7f1d1d"],
+    sunPosition: { top: "12%", right: "6%" },
+    hillColors: ["#5c0a00", "#7f1d1d", "#991b1b"],
+    // Sharp, jagged mountain peaks — fortress and strength silhouettes
+    terrainPaths: {
+      far: "M0 110 L35 70 L55 95 L80 50 L105 80 L130 38 L160 72 L190 28 L220 65 L250 20 L280 58 L310 15 L340 52 L375 18 L410 55 L445 22 L480 48 L480 140 L0 140 Z",
+      mid: "M0 90 L30 58 L50 78 L75 38 L100 65 L125 28 L155 58 L180 18 L210 48 L240 12 L270 44 L300 8 L330 38 L365 10 L400 42 L435 16 L465 38 L480 28 L480 120 L0 120 Z",
+      foreground: "M0 62 L28 40 L48 55 L70 28 L95 48 L120 18 L148 40 L175 12 L205 36 L235 8 L265 30 L298 6 L330 28 L362 8 L395 26 L428 10 L458 24 L480 14 L480 90 L0 90 Z",
+    },
+    ambientElements: [
+      { emoji: "🔥", left: "8%", bottom: "35%", animation: "animate-pulse", opacity: 0.85, size: 0.9 },
+      { emoji: "⚡", left: "28%", bottom: "55%", animation: "animate-bounce", opacity: 0.75, size: 0.8 },
+      { emoji: "🔥", left: "55%", bottom: "40%", animation: "animate-pulse", opacity: 0.8, size: 0.85 },
+      { emoji: "⚔️", left: "75%", bottom: "52%", animation: "animate-bounce", opacity: 0.7, size: 0.8 },
+      { emoji: "🔥", left: "92%", bottom: "38%", animation: "animate-pulse", opacity: 0.75, size: 0.75 },
+    ],
     centralStructure: {
       baseName: "Stronghold of Valor",
       stages: [

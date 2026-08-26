@@ -30,8 +30,6 @@ import {
 
 /** Typing indicator shows for at least this long (ms) for realism */
 const MIN_TYPING_MS = 800;
-/** Max ms the typing indicator shows before we give up waiting */
-const MAX_TYPING_MS = 12000;
 
 /* ── Component ────────────────────────────────────────────────────── */
 
@@ -85,7 +83,7 @@ export function AIConversationStep() {
       try {
         console.log("[AIConversationStep] Fetching initial Gemini greeting...");
         const typingStart = Date.now();
-        const opening = await raceWithTimeout(getOpeningMessage(), MAX_TYPING_MS);
+        const opening = await getOpeningMessage();
         const elapsed = Date.now() - typingStart;
         if (elapsed < MIN_TYPING_MS) await delay(MIN_TYPING_MS - elapsed);
         if (cancelled) return;
@@ -136,9 +134,9 @@ export function AIConversationStep() {
     try {
       console.log("[AIConversationStep] Sending user message to Gemini...");
       const typingStart = Date.now();
-      const { reply, isComplete } = await raceWithTimeout(
-        sendConversationMessage(historyRef.current.slice(0, -1), userMsg.text),
-        MAX_TYPING_MS,
+      const { reply, isComplete } = await sendConversationMessage(
+        historyRef.current.slice(0, -1),
+        userMsg.text,
       );
       const elapsed = Date.now() - typingStart;
       if (elapsed < MIN_TYPING_MS) await delay(MIN_TYPING_MS - elapsed);
@@ -390,11 +388,3 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function raceWithTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("timeout")), ms),
-    ),
-  ]);
-}
